@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>餐盤黑盒子：新北市學校午餐 75 元闖四關懂這一餐</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Poppins:wght@700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandYellow: '#FFF066',
+                        brandOrange: '#FF6B35',
+                        brandDarkOrange: '#E85A24',
+                        brandBlue: '#4EA8DE',
+                        cardBorder: '#1A1A1A',
+                    },
+                    borderWidth: {
+                        '3': '3px',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F4F7F6;
+            color: #1A1A1A;
+            font-size: 1.02rem;
+        }
+        .comic-border {
+            border: 3px solid #1A1A1A;
+            box-shadow: 4px 4px 0px #1A1A1A;
+            border-radius: 1.25rem;
+        }
+        .comic-button {
+            border: 3px solid #1A1A1A;
+            box-shadow: 3px 3px 0px #1A1A1A;
+            transition: all 0.1s ease;
+        }
+        .comic-button:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px #1A1A1A;
+        }
+        .comic-button:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px #1A1A1A;
+        }
+        .font-fun {
+            font-family: 'Poppins', sans-serif;
+        }
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        @keyframes bounce101 {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-bounce-101 {
+            animation: bounce101 2.5s infinite ease-in-out;
+        }
+        .bar-transition {
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between py-6 px-4 md:px-8">
+
+    <!-- 頂部標題與風格對齊參考圖截圖的精緻橘黃橫幅 -->
+    <header class="max-w-5xl mx-auto w-full">
+        <div class="bg-brandOrange comic-border p-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-white">
+            <div class="flex items-center space-x-3">
+                <span class="text-4xl bg-white p-2 rounded-2xl border-3 border-cardBorder shadow-sm">🍱</span>
+                <div>
+                    <h1 id="site-title" class="text-2xl md:text-3xl font-black font-fun tracking-tight flex items-center gap-2 flex-wrap text-white">
+                        <span>童年惡夢大投票</span>
+                        <span class="text-xs md:text-sm bg-brandYellow text-cardBorder px-3 py-1 rounded-full border-2 border-cardBorder font-black">KITCHEN RUSH!</span>
+                    </h1>
+                    <p id="site-subtitle" class="text-sm md:text-base font-bold text-yellow-100 mt-1">選出當年最讓你痛苦的那道「營養午餐魔王」！</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 shrink-0">
+                <span class="bg-white text-cardBorder font-black px-3.5 py-2 rounded-2xl text-xs md:text-sm border-2 border-cardBorder shadow-sm flex items-center space-x-1.5 whitespace-nowrap">
+                    <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shrink-0"></span>
+                    <span id="zone-badge-text">展區一：午餐破冰</span>
+                </span>
+                <button onclick="openIntroModal()" class="comic-button bg-brandYellow text-cardBorder font-black px-3.5 py-2 rounded-2xl text-xs md:text-sm flex items-center space-x-1.5 shadow-sm whitespace-nowrap">
+                    <i class="fa-solid fa-circle-question text-brandOrange"></i>
+                    <span>說明</span>
+                </button>
+                <button onclick="openAdminModal()" class="comic-button bg-white text-cardBorder font-black px-3.5 py-2 rounded-2xl text-xs md:text-sm flex items-center space-x-1.5 shadow-sm whitespace-nowrap">
+                    <i class="fa-solid fa-gear text-brandOrange"></i>
+                    <span>後台</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 4 大關卡導覽列 (Step Navigation) -->
+    <nav class="max-w-5xl mx-auto w-full mt-5">
+        <div class="bg-white comic-border p-3 flex flex-wrap items-center justify-around gap-2">
+            <button onclick="switchStage(1)" id="nav-btn-1" class="comic-button flex items-center space-x-2 px-4 py-2.5 rounded-2xl font-black text-sm transition bg-brandOrange text-white">
+                <span class="w-6 h-6 rounded-full bg-white text-cardBorder flex items-center justify-center font-black text-xs">1</span>
+                <span id="nav-label-1">猜猜看</span>
+            </button>
+            <div class="hidden md:block w-6 h-1 bg-cardBorder rounded"></div>
+            <button onclick="switchStage(2)" id="nav-btn-2" class="comic-button flex items-center space-x-2 px-4 py-2.5 rounded-2xl font-black text-sm transition bg-white text-cardBorder">
+                <span class="w-6 h-6 rounded-full bg-brandYellow text-cardBorder border-2 border-cardBorder flex items-center justify-center font-black text-xs">2</span>
+                <span id="nav-label-2">拆 75 元</span>
+            </button>
+            <div class="hidden md:block w-6 h-1 bg-cardBorder rounded"></div>
+            <button onclick="switchStage(3)" id="nav-btn-3" class="comic-button flex items-center space-x-2 px-4 py-2.5 rounded-2xl font-black text-sm transition bg-white text-cardBorder">
+                <span class="w-6 h-6 rounded-full bg-brandYellow text-cardBorder border-2 border-cardBorder flex items-center justify-center font-black text-xs">3</span>
+                <span id="nav-label-3">規則圖鑑</span>
+            </button>
+            <div class="hidden md:block w-6 h-1 bg-cardBorder rounded"></div>
+            <button onclick="switchStage(4)" id="nav-btn-4" class="comic-button flex items-center space-x-2 px-4 py-2.5 rounded-2xl font-black text-sm transition bg-white text-cardBorder">
+                <span class="w-6 h-6 rounded-full bg-brandYellow text-cardBorder border-2 border-cardBorder flex items-center justify-center font-black text-xs">4</span>
+                <span id="nav-label-4">Boss 戰</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 對話引導框 -->
+    <div class="max-w-5xl mx-auto w-full mt-3">
+        <div class="bg-white comic-border p-4 flex items-center space-x-3">
+            <div id="stage-avatar" class="text-4xl animate-bounce">😋</div>
+            <div id="stage-dialog" class="font-black text-base md:text-lg text-cardBorder leading-snug">
+                歡迎來到餐盤黑盒子！準備好一起探索 75 元營養午餐的秘密了嗎？
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要關卡容器 -->
+    <main id="main-content-area" class="max-w-5xl mx-auto w-full mt-4 flex-grow space-y-5">
+
+        <!-- ==================== 關卡 1：猜猜看 ==================== -->
+        <div id="stage-1-container" class="space-y-5">
+            <div class="bg-white comic-border p-6 md:p-8 space-y-5">
+                <!-- 第一關維持單一橫排 -->
+                <div class="flex flex-row items-center justify-between border-b-3 border-dashed border-gray-200 pb-3 gap-4">
+                    <span class="bg-brandOrange text-white font-black text-sm px-4 py-1.5 rounded-full border-2 border-cardBorder whitespace-nowrap">第 1 關</span>
+                    <h2 id="stage1-title-view" class="text-lg md:text-xl font-black text-cardBorder text-right flex-grow">猜猜看：每餐 75 元，多少錢拿來買食材？</h2>
+                </div>
+
+                <div class="text-center space-y-5 py-3">
+                    <p id="stage1-desc-view" class="text-base md:text-lg font-bold text-gray-700 max-w-2xl mx-auto leading-relaxed">請用下方滑桿猜測「食材費」大約是多少元？</p>
+                    <div class="text-5xl md:text-6xl font-fun font-black text-brandOrange" id="guess-display">40 元</div>
+                    
+                    <div class="max-w-xl mx-auto px-4">
+                        <input type="range" id="guess-slider" min="10" max="70" value="40" step="1" 
+                            class="w-full h-4 bg-yellow-200 rounded-lg appearance-none cursor-pointer border-3 border-cardBorder accent-brandOrange"
+                            oninput="updateGuessSlider(this.value)">
+                        <div class="flex flex-row justify-between items-center text-xs md:text-sm font-black text-gray-500 mt-2 whitespace-nowrap gap-2">
+                            <span>10元 (極少)</span>
+                            <span>35元</span>
+                            <span class="text-brandOrange font-black">52.5元 (法定7成)</span>
+                            <span>70元</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-3 border-t-3 border-dashed border-gray-200">
+                    <button onclick="switchStage(2)" class="comic-button bg-brandOrange hover:bg-brandDarkOrange text-white font-black text-base px-8 py-3 rounded-2xl flex items-center space-x-2">
+                        <span>解鎖下一關：拆 75 元</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 關卡 2：拆 75 元 ==================== -->
+        <div id="stage-2-container" class="space-y-5 hidden">
+            <div class="bg-white comic-border p-6 md:p-8 space-y-5">
+                <div class="flex flex-row items-center justify-between border-b-3 border-dashed border-gray-200 pb-3 gap-4">
+                    <span class="bg-brandYellow text-cardBorder font-black text-sm px-4 py-1.5 rounded-full border-2 border-cardBorder whitespace-nowrap">第 2 關</span>
+                    <h2 id="stage2-title-view" class="text-lg md:text-2xl font-black text-cardBorder text-right flex-grow">拆 75 元：食材血條與各項支出分配</h2>
+                </div>
+
+                <div class="bg-yellow-50 comic-border p-4 space-y-3">
+                    <div class="flex justify-between items-center flex-wrap gap-2">
+                        <h3 class="font-black text-cardBorder text-lg flex items-center space-x-2">
+                            <span>🍱</span>
+                            <span>食材品質血條與新鮮度</span>
+                        </h3>
+                        <div id="food-quality-badge" class="bg-green-400 text-cardBorder font-black px-3 py-1.5 rounded-xl text-sm border-2 border-cardBorder">
+                            🌟 豐盛新鮮便當
+                        </div>
+                    </div>
+
+                    <div class="w-full bg-gray-200 h-6 rounded-full border-3 border-cardBorder overflow-hidden p-0.5 relative">
+                        <div id="health-bar-fill" class="h-full rounded-full bg-green-500 bar-transition" style="width: 65%;"></div>
+                    </div>
+                    <div class="flex justify-between text-xs font-black text-gray-600">
+                        <span>0 元 (空餐盤)</span>
+                        <span class="text-brandOrange font-black">過關線 52.5 元 (法定 7 成)</span>
+                        <span>75 元</span>
+                    </div>
+
+                    <div id="food-visual-box" class="bg-white comic-border p-4 text-center flex flex-col items-center justify-center space-y-1">
+                        <div class="text-5xl" id="food-visual-emoji">🍱✨🍗🥦</div>
+                        <p class="text-base font-black text-cardBorder" id="food-visual-desc">肉塊豐盛、青菜翠綠、營養滿分！</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-blue-50 comic-border p-4 text-center">
+                        <span class="text-xs font-black text-gray-600 block mb-1">每餐總預算</span>
+                        <span class="text-3xl font-fun font-black text-cardBorder">75 元</span>
+                    </div>
+                    <div class="bg-brandYellow comic-border p-4 text-center">
+                        <span class="text-xs font-black text-cardBorder block mb-1">目前可用於買食材的金額 (含 5% 精確換算)</span>
+                        <span class="text-4xl font-fun font-black text-brandOrange drop-shadow-sm" id="available-food-money">49 元</span>
+                        <span class="text-xs font-black text-cardBorder block mt-1" id="available-food-pct">佔 65.3%</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="font-black text-cardBorder text-lg">⚙️ 各項成本支出（可在後台自由調整）</h3>
+                    <div id="budget-sliders-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+
+                <div class="flex justify-between pt-3 border-t-3 border-dashed border-gray-200">
+                    <button onclick="switchStage(1)" class="comic-button bg-gray-200 text-cardBorder font-black px-6 py-2.5 rounded-2xl text-base">上一關</button>
+                    <button onclick="switchStage(3)" class="comic-button bg-brandOrange hover:bg-brandDarkOrange text-white font-black text-base px-8 py-2.5 rounded-2xl flex items-center space-x-2">
+                        <span>解鎖第三關：規則圖鑑</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 關卡 3：規則圖鑑 ==================== -->
+        <div id="stage-3-container" class="space-y-5 hidden">
+            <div class="bg-white comic-border p-6 md:p-8 space-y-5">
+                <div class="flex flex-row items-center justify-between border-b-3 border-dashed border-gray-200 pb-3 gap-4">
+                    <span class="bg-green-400 text-cardBorder font-black text-sm px-4 py-1.5 rounded-full border-2 border-cardBorder whitespace-nowrap">第 3 關</span>
+                    <h2 id="stage3-title-view" class="text-lg md:text-2xl font-black text-cardBorder text-right flex-grow">規則圖鑑：翻開卡片，收集營養午餐規則！</h2>
+                    <span id="rules-collected-badge" class="bg-brandYellow text-cardBorder px-3 py-1.5 rounded-xl text-xs font-black border-2 border-cardBorder whitespace-nowrap">
+                        已收集 0 / 7
+                    </span>
+                </div>
+
+                <p class="text-sm font-bold text-gray-600 text-center">👇 點擊下方任一卡片來「翻牌」閱讀法規與知識！全部翻開即可解鎖 Boss 戰！</p>
+
+                <div id="flip-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+
+                <div class="flex justify-between pt-3 border-t-3 border-dashed border-gray-200">
+                    <button onclick="switchStage(2)" class="comic-button bg-gray-200 text-cardBorder font-black px-6 py-2.5 rounded-2xl text-base">上一關</button>
+                    <button onclick="switchStage(4)" id="to-stage-4-btn" class="comic-button bg-gray-300 text-gray-500 font-black text-base px-8 py-2.5 rounded-2xl cursor-not-allowed" disabled>
+                        <span>解鎖最終 Boss 戰 🔒</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 關卡 4：Boss 戰 ==================== -->
+        <div id="stage-4-container" class="space-y-6 hidden">
+            <div class="bg-white comic-border p-6 md:p-10 space-y-6">
+                <div class="flex flex-row items-center justify-between border-b-3 border-dashed border-gray-200 pb-4 gap-4">
+                    <span class="bg-red-500 text-white font-black text-sm md:text-base px-4 py-2 rounded-full border-2 border-cardBorder whitespace-nowrap">最終關 Boss</span>
+                    <h2 id="stage4-title-view" class="text-xl md:text-3xl font-black text-cardBorder text-right flex-grow">打倒剩食怪：食材浪費與互動電子秤</h2>
+                </div>
+
+                <!-- 剩食怪與血條 -->
+                <div class="bg-red-50 comic-border p-6 text-center space-y-4">
+                    <div class="text-7xl animate-bounce-101" id="boss-avatar-emoji">👾</div>
+                    <h3 class="text-2xl font-black text-red-600" id="boss-title-text">剩食怪出現了！每年倒掉大量食材！</h3>
+                    <p class="text-base font-bold text-gray-700">點擊下方按鈕攻擊剩食怪，了解台灣校園驚人的廚餘真相！</p>
+                    <button onclick="attackBoss()" class="comic-button bg-red-500 hover:bg-red-600 text-white font-black text-xl px-10 py-4 rounded-2xl shadow-lg">
+                        💥 攻擊剩食怪！ (連點 3 下)
+                    </button>
+                    <div class="w-full bg-gray-200 h-6 rounded-full border-3 border-cardBorder overflow-hidden mt-4 max-w-md mx-auto">
+                        <div id="boss-hp-bar" class="h-full bg-red-500 bar-transition" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <!-- 三大數據指標卡 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="bg-white comic-border p-5 text-center space-y-2">
+                        <div class="text-3xl">🗑️</div>
+                        <div class="text-2xl font-fun font-black text-red-500">10–25%</div>
+                        <div class="text-sm font-black text-cardBorder">食材被倒掉</div>
+                        <div class="text-xs bg-yellow-100 text-cardBorder px-3 py-1 rounded-full border border-cardBorder inline-block">你的食材 → 約 4.9-12.3 元</div>
+                    </div>
+                    <div class="bg-white comic-border p-5 text-center space-y-2">
+                        <div class="text-3xl">⚖️</div>
+                        <div class="text-2xl font-fun font-black text-cardBorder">150 公克</div>
+                        <div class="text-sm font-black text-cardBorder">每人每天的廚餘</div>
+                        <div class="text-xs text-gray-500 font-bold">教育部統計資料</div>
+                    </div>
+                    <div class="bg-white comic-border p-5 text-center space-y-2">
+                        <div class="text-3xl">🏢</div>
+                        <div class="text-2xl font-fun font-black text-blue-600">3.2–7.9 億</div>
+                        <div class="text-sm font-black text-cardBorder">新北一年被倒掉的食材</div>
+                        <div class="text-xs text-gray-500 font-bold">驚人的浪費金額</div>
+                    </div>
+                </div>
+
+                <!-- 你的成績單 -->
+                <div class="bg-blue-50 comic-border p-5 space-y-3">
+                    <h3 class="text-xl font-black text-cardBorder">📊 你的成績單</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-center">
+                        <div class="bg-white comic-border p-3">
+                            <span class="text-xs font-black text-gray-500 block">你猜的食材</span>
+                            <span class="text-2xl font-fun font-black text-cardBorder" id="score-guess">40 元</span>
+                        </div>
+                        <div class="bg-white comic-border p-3">
+                            <span class="text-xs font-black text-gray-500 block">規定下限約</span>
+                            <span class="text-2xl font-fun font-black text-brandOrange">48.8 元</span>
+                            <span class="text-xs text-gray-500 block">(65%)</span>
+                        </div>
+                        <div class="bg-white comic-border p-3">
+                            <span class="text-xs font-black text-gray-500 block">你拆出來的食材</span>
+                            <span class="text-2xl font-fun font-black text-green-600" id="score-actual">49 元</span>
+                        </div>
+                    </div>
+                    <p class="text-center font-black text-base text-brandOrange" id="score-comment">你猜少了 8.8 元，食材比想像中多！</p>
+                </div>
+
+                <!-- 廚餘震撼展示框 (可於後台自訂上傳照片) -->
+                <div class="bg-white comic-border p-6 space-y-5">
+                    <h3 class="text-xl font-black text-cardBorder text-center">🏢 全台校園一年廚餘量震撼對比</h3>
+                    
+                    <div class="flex flex-col items-center justify-center">
+                        <!-- 照片展示區 -->
+                        <div class="w-full max-w-md min-h-[260px] bg-gray-50 comic-border rounded-2xl flex flex-col items-center justify-center overflow-hidden p-3 relative">
+                            <img id="stage4-custom-photo" src="https://placehold.co/600x400/f1f5f9/64748b?text=%E8%AB%8B%E6%96%BC%E5%BE%8C%E5%8F%B0%E4%B8%8A%E5%82%B3%E6%88%96%E6%94%BE%E5%85%A5%E7%85%A7%E7%89%87" alt="廚餘對比展示照片" class="max-h-72 w-auto object-contain rounded-xl">
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 comic-border p-4 text-center font-black text-base md:text-lg text-cardBorder">
+                        🏢 全台學校一年倒掉的午餐廚餘疊起來，大約有 <span class="text-red-600 text-xl font-fun">6.5 棟</span> 台北 101 那麼高！
+                    </div>
+                </div>
+
+                <!-- 剩食怪的弱點 (分頁切換) -->
+                <div class="bg-white comic-border p-6 space-y-4">
+                    <h3 class="text-xl font-black text-cardBorder text-center">🎯 剩食怪的弱點</h3>
+                    <div class="flex flex-wrap justify-center gap-2" id="boss-weakness-tabs">
+                        <button onclick="switchWeaknessTab(0)" id="weak-tab-0" class="comic-button px-5 py-2.5 rounded-xl font-black text-base bg-brandOrange text-white">😋 口味</button>
+                        <button onclick="switchWeaknessTab(1)" id="weak-tab-1" class="comic-button px-5 py-2.5 rounded-xl font-black text-base bg-white text-cardBorder">🍚 份量</button>
+                        <button onclick="switchWeaknessTab(2)" id="weak-tab-2" class="comic-button px-5 py-2.5 rounded-xl font-black text-base bg-white text-cardBorder">⏰ 用餐情境</button>
+                        <button onclick="switchWeaknessTab(3)" id="weak-tab-3" class="comic-button px-5 py-2.5 rounded-xl font-black text-base bg-white text-cardBorder">📋 菜單安排</button>
+                        <button onclick="switchWeaknessTab(4)" id="weak-tab-4" class="comic-button px-5 py-2.5 rounded-xl font-black text-base bg-white text-cardBorder">♻️ 回饋回收</button>
+                    </div>
+
+                    <div id="boss-weakness-content" class="bg-yellow-50 comic-border p-5 text-center space-y-3">
+                        <div class="text-3xl">🍆🥬🐟</div>
+                        <h4 class="text-lg font-black text-cardBorder">最常剩下：茄子、青菜、魚、豆芽菜。廚餘中蔬菜佔 63%。</h4>
+                        <p class="text-sm font-bold text-gray-700">了解學童喜好與口味調整，是減少校園剩食的關鍵！</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between pt-4 border-t-3 border-dashed border-gray-200">
+                    <button onclick="switchStage(3)" class="comic-button bg-gray-200 text-cardBorder font-black px-8 py-3 rounded-2xl text-lg">上一關</button>
+                    <button onclick="restartGame()" class="comic-button bg-green-500 hover:bg-green-600 text-white font-black text-lg px-10 py-3 rounded-2xl flex items-center space-x-3">
+                        <i class="fa-solid fa-rotate-right text-xl"></i>
+                        <span>重新挑戰一次！</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ==================== 一進站簡單有趣玩法說明 Modal ==================== -->
+    <div id="intro-modal" class="fixed inset-0 bg-black/65 z-50 flex items-center justify-center p-4">
+        <div class="bg-white comic-border w-full max-w-xl p-6 md:p-8 space-y-5 relative text-center">
+            <div class="inline-block bg-brandYellow text-cardBorder font-black text-xs md:text-sm px-4 py-1.5 rounded-full border-2 border-cardBorder">
+                🕵️‍♂️ 餐盤黑盒子・任務簡報
+            </div>
+            
+            <div class="text-5xl md:text-6xl animate-bounce">🍱🔍</div>
+            
+            <h2 class="text-2xl md:text-3xl font-black text-cardBorder leading-tight">
+                每天吃的 75 元營養午餐，<br>到底藏了多少秘密？
+            </h2>
+            
+            <p class="text-sm md:text-base font-bold text-gray-600 leading-relaxed">
+                歡迎來到《餐盤黑盒子》！只要跟著下面 3 個超簡單步驟，就能秒懂一頓學校午餐的真相：
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
+                <div class="bg-yellow-50 comic-border p-3.5 space-y-1">
+                    <div class="text-2xl">🤔</div>
+                    <div class="font-black text-sm text-cardBorder">1. 先猜猜看</div>
+                    <p class="text-xs font-bold text-gray-600">75 元裡面，有多少錢真正拿去買菜？</p>
+                </div>
+                <div class="bg-blue-50 comic-border p-3.5 space-y-1">
+                    <div class="text-2xl">💰</div>
+                    <div class="font-black text-sm text-cardBorder">2. 拆解成本</div>
+                    <p class="text-xs font-bold text-gray-600">扣掉廚工、水電與運費，便當還剩多少料？</p>
+                </div>
+                <div class="bg-red-50 comic-border p-3.5 space-y-1">
+                    <div class="text-2xl">👾</div>
+                    <div class="font-black text-sm text-cardBorder">3. 打倒剩食怪</div>
+                    <p class="text-xs font-bold text-gray-600">翻開法規圖鑑，揭開校園廚餘的驚人真相！</p>
+                </div>
+            </div>
+
+            <button onclick="closeIntroModal()" class="w-full comic-button bg-brandOrange hover:bg-brandDarkOrange text-white font-black text-lg py-3.5 rounded-2xl flex items-center justify-center space-x-2">
+                <span>我準備好了，開始闖關！</span>
+                <span>🚀</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== 管理者後台 Modal ==================== -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white comic-border w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 md:p-8 space-y-4 relative">
+            <button onclick="closeAdminModal()" class="absolute top-5 right-5 text-2xl font-black text-cardBorder hover:text-red-500">✕</button>
+            
+            <h3 class="text-2xl font-black text-cardBorder flex items-center space-x-2">
+                <i class="fa-solid fa-gear text-brandOrange"></i>
+                <span>分關卡管理者後台設定</span>
+            </h3>
+
+            <!-- 密碼登入驗證 -->
+            <div id="admin-auth-step" class="space-y-4 py-6 text-center">
+                <p class="text-base font-bold text-gray-700">請輸入管理員密碼 (預設為 admin 或 8888)：</p>
+                <input type="password" id="admin-pass-input" placeholder="請輸入密碼" class="p-3 border-3 border-cardBorder rounded-xl text-center text-lg font-black w-60 max-w-full">
+                <div>
+                    <button onclick="verifyAdminPassword()" class="comic-button bg-brandOrange text-white font-black px-6 py-2.5 rounded-xl text-base mt-2">登入後台</button>
+                </div>
+                <p id="auth-error-msg" class="text-red-500 font-bold text-sm hidden">密碼錯誤，請重新輸入！</p>
+            </div>
+
+            <!-- 後台面板 (分頁) -->
+            <div id="admin-panel-step" class="space-y-4 hidden">
+                <!-- 分頁導覽按鈕 -->
+                <div class="flex flex-wrap gap-2 border-b-2 border-gray-200 pb-2">
+                    <button onclick="switchAdminTab('general')" id="admin-tab-btn-general" class="comic-button px-3.5 py-2 rounded-xl font-black text-xs bg-brandOrange text-white">通用設定</button>
+                    <button onclick="switchAdminTab('s1')" id="admin-tab-btn-s1" class="comic-button px-3.5 py-2 rounded-xl font-black text-xs bg-white text-cardBorder">第 1 關設定</button>
+                    <button onclick="switchAdminTab('s2')" id="admin-tab-btn-s2" class="comic-button px-3.5 py-2 rounded-xl font-black text-xs bg-white text-cardBorder">第 2 關設定</button>
+                    <button onclick="switchAdminTab('s3')" id="admin-tab-btn-s3" class="comic-button px-3.5 py-2 rounded-xl font-black text-xs bg-white text-cardBorder">第 3 關設定</button>
+                    <button onclick="switchAdminTab('s4')" id="admin-tab-btn-s4" class="comic-button px-3.5 py-2 rounded-xl font-black text-xs bg-white text-cardBorder">第 4 關設定</button>
+                </div>
+
+                <!-- 分頁 0：通用設定 -->
+                <div id="admin-tab-general" class="space-y-3">
+                    <div class="bg-yellow-50 comic-border p-4 space-y-2">
+                        <h4 class="font-black text-cardBorder text-base mb-1">🌐 網站全域標題與字體大小</h4>
+                        <div class="space-y-2">
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">主標題：</label>
+                                <input type="text" id="setting-title" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">副標題：</label>
+                                <input type="text" id="setting-subtitle" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">右上角展區標籤名稱：</label>
+                                <input type="text" id="setting-zone-name" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">全站字體大小設定：</label>
+                                <select id="setting-font-size" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                                    <option value="0.92rem">小 (精緻舒適)</option>
+                                    <option value="1.02rem" selected>標準 (適中清晰)</option>
+                                    <option value="1.12rem">大 (放大易讀)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分頁 1：第 1 關 -->
+                <div id="admin-tab-s1" class="space-y-3 hidden">
+                    <div class="bg-blue-50 comic-border p-4 space-y-2">
+                        <h4 class="font-black text-cardBorder text-base mb-1">1️⃣ 第 1 關名稱與內容設定</h4>
+                        <div class="space-y-2">
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">第 1 關導覽列名稱：</label>
+                                <input type="text" id="setting-s1-name" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">第 1 關標題：</label>
+                                <input type="text" id="setting-s1-title" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">第 1 關提示說明文字：</label>
+                                <input type="text" id="setting-s1-desc" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分頁 2：第 2 關 -->
+                <div id="admin-tab-s2" class="space-y-3 hidden">
+                    <div class="bg-green-50 comic-border p-4 space-y-2">
+                        <h4 class="font-black text-cardBorder text-base mb-1">2️⃣ 第 2 關名稱、內容與支出項目設定</h4>
+                        <div class="space-y-2">
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">第 2 關導覽列名稱：</label>
+                                <input type="text" id="setting-s2-name" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">第 2 關標題：</label>
+                                <input type="text" id="setting-s2-title" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                            <div class="pt-2 border-t-2 border-gray-200">
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="font-black text-cardBorder text-sm">各項支出項目與金額 (可自由新增或修改)：</label>
+                                    <button onclick="addExpenseItem()" class="comic-button bg-green-500 text-white font-black px-3 py-1 rounded-xl text-xs">➕ 新增支出</button>
+                                </div>
+                                <div id="admin-expenses-list" class="space-y-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分頁 3：第 3 關 -->
+                <div id="admin-tab-s3" class="space-y-3 hidden">
+                    <div class="bg-purple-50 comic-border p-4 space-y-2">
+                        <h4 class="font-black text-cardBorder text-base mb-1">3️⃣ 第 3 關名稱與卡片內容設定</h4>
+                        <div class="space-y-2">
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">第 3 關導覽列名稱：</label>
+                                <input type="text" id="setting-s3-name" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">第 3 關標題：</label>
+                                <input type="text" id="setting-s3-title" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                            <div class="pt-2 border-t-2 border-gray-200">
+                                <label class="font-black text-cardBorder text-sm block mb-2">7 張翻翻樂規則卡片內容編輯：</label>
+                                <div id="admin-rules-list" class="space-y-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分頁 4：第 4 關 -->
+                <div id="admin-tab-s4" class="space-y-3 hidden">
+                    <div class="bg-red-50 comic-border p-4 space-y-2">
+                        <h4 class="font-black text-cardBorder text-base mb-1">4️⃣ 第 4 關名稱與設定</h4>
+                        <div class="space-y-2.5">
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">第 4 關導覽列名稱：</label>
+                                <input type="text" id="setting-s4-name" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">第 4 關標題：</label>
+                                <input type="text" id="setting-s4-title" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">上傳展示照片 (從電腦選擇圖片)：</label>
+                                <input type="file" id="setting-101-file" accept="image/*" onchange="handleImageUpload(event)" class="w-full p-2 border-2 border-cardBorder rounded-xl bg-white font-bold text-xs file:mr-3 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-black file:bg-brandOrange file:text-white hover:file:bg-brandDarkOrange cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-xs mb-1 font-bold">或直接輸入照片網址 (URL)：</label>
+                                <input type="text" id="setting-101-img" class="w-full p-2.5 border-2 border-cardBorder rounded-xl bg-white font-bold text-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="saveAdminSettings()" class="w-full bg-brandOrange hover:bg-brandDarkOrange text-white font-black py-3.5 rounded-2xl comic-button text-base">
+                    儲存所有後台設定並即時套用
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript 邏輯 -->
+    <script>
+        let gameState = {
+            totalBudget: 75,
+            guessMoney: 40,
+            expenses: [
+                { id: 'seasoning', name: '油與調味品', cost: 4, icon: '🧂', desc: '新北規定佔 5% 以上（約 3.75 元起），確保烹調風味與油脂攝取。' },
+                { id: 'personnel', name: '廚工人事', cost: 11.5, icon: '🧑‍🍳', desc: '學校或團膳業者支付廚工薪資與勞健保，確保餐點安全烹煮。' },
+                { id: 'utilities', name: '水電瓦斯', cost: 4, icon: '🔥', desc: '大型蒸籠、爐具與清洗用水電開銷。' },
+                { id: 'maintenance', name: '設備維修', cost: 2.5, icon: '🔧', desc: '廚房鍋具、截油槽與抽油煙機定期維修保養。' },
+                { id: 'delivery', name: '配送冷鏈', cost: 2, icon: '🚚', desc: '溫控冷藏車輛運送食材至各校，確保新鮮不腐敗。' },
+                { id: 'inspection', name: '食品檢驗', cost: 1, icon: '🔬', desc: '抽驗農藥殘留與生菌數，保障學童食安。' },
+                { id: 'admin', name: '管理雜支', cost: 10, icon: '📎', desc: '行政辦公、紙本表單與雜項開支。' }
+            ],
+            rules: [
+                { id: 1, title: '每餐 75 元', desc: '家長收費補助 60 元，加政府食材補助 15 元，家長不必繳午餐費。', unlocked: false },
+                { id: 2, title: '食材要佔 6.5 至 7 成', desc: '教育部：至少 7 成。新北市：主副食 65% 以上、油與調味品 5% 以上。換算 75 元約 48.8 元以上！', unlocked: false },
+                { id: 3, title: '肉類要可溯源', desc: '依學校衛生法第 23 條之 3，肉類須使用 CAS、產銷履歷或國產可追溯產品。', unlocked: false },
+                { id: 4, title: '依每日飲食指南配菜', desc: '各類食物供應量可在一周內調整，日均在建議值 ±8% 以內。', unlocked: false },
+                { id: 5, title: '每天下午 2 點前上傳', desc: '各校要把當日午餐資料上傳校園食材登錄平臺，公開透明。', unlocked: false },
+                { id: 6, title: '一定要預留備餐量', desc: '中央規範須預留備餐量，所以廚餘不全然等於學生剩下的。', unlocked: false },
+                { id: 7, title: '每週五天在校用餐', desc: '不留校用餐不另外退費，也不補助午餐以外的餐點。', unlocked: false }
+            ],
+            collectedRulesCount: 0,
+            bossHp: 100,
+            siteTitle: '餐盤黑盒子：新北市學校午餐 75 元闖四關懂這一餐',
+            siteSubtitle: '闖四關看懂這一餐！',
+            zoneName: '展區一：午餐破冰',
+            stage1Name: '猜猜看',
+            stage1Title: '猜猜看：每餐 75 元，多少錢拿來買食材？',
+            stage1Desc: '請用下方滑桿猜測「食材費」大約是多少元？',
+            stage2Name: '拆 75 元',
+            stage2Title: '拆 75 元：食材血條與各項支出分配',
+            stage3Name: '規則圖鑑',
+            stage3Title: '規則圖鑑：翻開卡片，收集 7 條營養午餐規則！',
+            stage4Name: 'Boss 戰',
+            stage4Title: '打倒剩食怪：食材浪費與驚人真相',
+            fontSizeSetting: '1.02rem',
+            img101Url: 'https://placehold.co/600x400/f1f5f9/64748b?text=%E8%AB%8B%E6%96%BC%E5%BE%8C%E5%8F%B0%E4%B8%8A%E5%82%B3%E6%88%96%E6%94%BE%E5%85%A5%E7%85%A7%E7%89%87'
+        };
+
+        let attackCount = 0;
+
+        function initGame() {
+            switchStage(1);
+            renderBudgetSliders();
+            renderFlipCards();
+            updateStage4Photo();
+        }
+
+        function openIntroModal() {
+            const modal = document.getElementById('intro-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeIntroModal() {
+            const modal = document.getElementById('intro-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function switchStage(stageNum) {
+            for (let i = 1; i <= 4; i++) {
+                const container = document.getElementById(`stage-${i}-container`);
+                const btn = document.getElementById(`nav-btn-${i}`);
+                if (container) container.classList.add('hidden');
+                if (btn) {
+                    btn.className = "comic-button flex items-center space-x-2 px-4 py-2.5 rounded-2xl font-black text-sm transition bg-white text-cardBorder";
+                }
+            }
+            const activeContainer = document.getElementById(`stage-${stageNum}-container`);
+            const activeBtn = document.getElementById(`nav-btn-${stageNum}`);
+            if (activeContainer) activeContainer.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.className = "comic-button flex items-center space-x-2 px-4 py-2.5 rounded-2xl font-black text-sm transition bg-brandOrange text-white";
+            }
+
+            const avatar = document.getElementById('stage-avatar');
+            const dialog = document.getElementById('stage-dialog');
+            if (stageNum === 1) {
+                if (avatar) avatar.textContent = "😋";
+                if (dialog) dialog.textContent = "第一關：試著用滑桿猜猜看 75 元的營養午餐裡，有多少錢是用來買食材的呢？";
+            } else if (stageNum === 2) {
+                if (avatar) avatar.textContent = "🍱";
+                if (dialog) dialog.textContent = "第二關：拆解 75 元！看看食材血條與各項成本支出如何分配！";
+                updateBudgetView();
+            } else if (stageNum === 3) {
+                if (avatar) avatar.textContent = "📚";
+                if (dialog) dialog.textContent = "第三關：翻開圖鑑卡片，收集 7 條營養午餐法規與冷知識！";
+            } else if (stageNum === 4) {
+                if (avatar) avatar.textContent = "👾";
+                if (dialog) dialog.textContent = "最終 Boss 戰：打倒剩食怪，利用互動電子秤看懂廚餘重量與浪費！";
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateGuessSlider(val) {
+            gameState.guessMoney = parseInt(val);
+            const display = document.getElementById('guess-display');
+            if (display) display.textContent = `${val} 元`;
+        }
+
+        function updateBudgetView() {
+            const totalOther = gameState.expenses.reduce((sum, e) => sum + e.cost, 0);
+            const foodMoney = Math.max(0, gameState.totalBudget - totalOther).toFixed(1);
+            const foodPct = ((foodMoney / gameState.totalBudget) * 100).toFixed(1);
+
+            const moneyEl = document.getElementById('available-food-money');
+            const pctEl = document.getElementById('available-food-pct');
+            const barEl = document.getElementById('health-bar-fill');
+            const badgeEl = document.getElementById('food-quality-badge');
+            const visualEmoji = document.getElementById('food-visual-emoji');
+            const visualDesc = document.getElementById('food-visual-desc');
+
+            if (moneyEl) moneyEl.textContent = `${foodMoney} 元`;
+            if (pctEl) pctEl.textContent = `佔 ${foodPct}%`;
+            if (barEl) barEl.style.width = `${Math.min(100, Math.max(0, foodPct))}%`;
+
+            if (foodMoney >= 52.5) {
+                if (badgeEl) { badgeEl.className = "bg-green-400 text-cardBorder font-black px-3 py-1.5 rounded-xl text-sm border-2 border-cardBorder"; badgeEl.textContent = "🌟 豐盛新鮮便當"; }
+                if (barEl) barEl.className = "h-full rounded-full bg-green-500 bar-transition";
+                if (visualEmoji) visualEmoji.textContent = "🍱✨🍗🥦";
+                if (visualDesc) visualDesc.textContent = "肉塊豐盛、青菜翠綠、營養滿分！";
+            } else if (foodMoney >= 45) {
+                if (badgeEl) { badgeEl.className = "bg-yellow-300 text-cardBorder font-black px-3 py-1.5 rounded-xl text-sm border-2 border-cardBorder"; badgeEl.textContent = "⚠️ 勉強及格便當"; }
+                if (barEl) barEl.className = "h-full rounded-full bg-yellow-500 bar-transition";
+                if (visualEmoji) visualEmoji.textContent = "🍱🥕🥚";
+                if (visualDesc) visualDesc.textContent = "菜色略顯單調，主菜份量較少！";
+            } else {
+                if (badgeEl) { badgeEl.className = "bg-red-400 text-white font-black px-3 py-1.5 rounded-xl text-sm border-2 border-cardBorder"; badgeEl.textContent = "🚨 食材嚴重不足"; }
+                if (barEl) barEl.className = "h-full rounded-full bg-red-500 bar-transition";
+                if (visualEmoji) visualEmoji.textContent = "🍽️💧";
+                if (visualDesc) visualDesc.textContent = "僅剩白飯與少許配菜，營養嚴重失衡！";
+            }
+        }
+
+        function renderBudgetSliders() {
+            const container = document.getElementById('budget-sliders-container');
+            if (!container) return;
+            container.innerHTML = gameState.expenses.map((exp, idx) => `
+                <div class="bg-white comic-border p-3 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-black text-sm text-cardBorder flex items-center space-x-1.5">
+                            <span>${exp.icon}</span>
+                            <span>${exp.name}</span>
+                        </span>
+                        <span class="font-fun font-black text-base text-brandOrange">${exp.cost} 元</span>
+                    </div>
+                    <input type="range" min="0" max="25" step="0.5" value="${exp.cost}" 
+                        class="w-full h-2 bg-yellow-100 rounded-lg appearance-none cursor-pointer border-2 border-cardBorder accent-brandOrange"
+                        oninput="updateExpenseCost(${idx}, this.value)">
+                    <p class="text-[11px] text-gray-500 font-bold leading-snug">${exp.desc}</p>
+                </div>
+            `).join('');
+            updateBudgetView();
+        }
+
+        function updateExpenseCost(idx, val) {
+            gameState.expenses[idx].cost = parseFloat(val);
+            renderBudgetSliders();
+        }
+
+        function renderFlipCards() {
+            const grid = document.getElementById('flip-cards-grid');
+            if (!grid) return;
+            grid.innerHTML = gameState.rules.map((rule) => `
+                <div class="perspective-1000 h-48 cursor-pointer" onclick="flipRuleCard(${rule.id})">
+                    <div id="rule-card-${rule.id}" class="relative w-full h-full duration-500 transform-style-3d ${rule.unlocked ? 'rotate-y-180' : ''}">
+                        <!-- 正面 -->
+                        <div class="absolute inset-0 bg-brandYellow comic-border flex flex-col items-center justify-center p-4 text-center backface-hidden">
+                            <span class="text-3xl mb-2">🎁</span>
+                            <span class="font-black text-base text-cardBorder">翻開規則 #${rule.id}</span>
+                            <span class="text-xs font-bold text-gray-600 mt-1">點擊翻牌</span>
+                        </div>
+                        <!-- 背面 -->
+                        <div class="absolute inset-0 bg-white comic-border flex flex-col items-center justify-center p-4 text-center backface-hidden rotate-y-180">
+                            <span class="bg-green-400 text-cardBorder text-[10px] font-black px-2 py-0.5 rounded border border-cardBorder mb-1">已解鎖 #${rule.id}</span>
+                            <h4 class="font-black text-sm text-cardBorder mb-1">${rule.title}</h4>
+                            <p class="text-xs font-bold text-gray-600 leading-tight">${rule.desc}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function flipRuleCard(id) {
+            const rule = gameState.rules.find(r => r.id === id);
+            if (rule && !rule.unlocked) {
+                rule.unlocked = true;
+                gameState.collectedRulesCount++;
+                renderFlipCards();
+                
+                const badge = document.getElementById('rules-collected-badge');
+                if (badge) badge.textContent = `已收集 ${gameState.collectedRulesCount} / 7`;
+
+                if (gameState.collectedRulesCount >= 7) {
+                    const to4Btn = document.getElementById('to-stage-4-btn');
+                    if (to4Btn) {
+                        to4Btn.disabled = false;
+                        to4Btn.className = "comic-button bg-brandOrange hover:bg-brandDarkOrange text-white font-black text-base px-8 py-2.5 rounded-2xl flex items-center space-x-2 cursor-pointer animate-bounce";
+                        to4Btn.innerHTML = `<span>解鎖最終 Boss 戰 🚀</span>`;
+                    }
+                }
+            }
+        }
+
+        function updateStage4Photo() {
+            const photoEl = document.getElementById('stage4-custom-photo');
+            if (photoEl && gameState.img101Url) {
+                photoEl.src = gameState.img101Url;
+            }
+        }
+
+        function attackBoss() {
+            attackCount++;
+            gameState.bossHp = Math.max(0, 100 - attackCount * 34);
+            const hpBar = document.getElementById('boss-hp-bar');
+            if (hpBar) hpBar.style.width = `${gameState.bossHp}%`;
+
+            if (gameState.bossHp <= 0) {
+                document.getElementById('boss-title-text').textContent = "🎉 剩食怪被你打倒了！";
+                document.getElementById('boss-avatar-emoji').textContent = "🏆✨";
+            }
+
+            const scoreGuess = document.getElementById('score-guess');
+            const scoreActual = document.getElementById('score-actual');
+            const scoreComment = document.getElementById('score-comment');
+            if (scoreGuess) scoreGuess.textContent = `${gameState.guessMoney} 元`;
+            
+            const totalOtherCosts = gameState.expenses.reduce((sum, e) => sum + e.cost, 0);
+            const actualFood = (gameState.totalBudget - totalOtherCosts).toFixed(1);
+            if (scoreActual) scoreActual.textContent = `${actualFood} 元`;
+
+            const diff = gameState.guessMoney - actualFood;
+            if (scoreComment) {
+                if (Math.abs(diff) <= 3) {
+                    scoreComment.textContent = "太神啦！你猜得跟實際食材金額幾乎一模一樣！";
+                } else if (diff > 0) {
+                    scoreComment.textContent = `你猜多了 ${diff.toFixed(1)} 元，食材其實比想像中少！`;
+                } else {
+                    scoreComment.textContent = `你猜少了 ${Math.abs(diff).toFixed(1)} 元，食材其實比想像中多！`;
+                }
+            }
+        }
+
+        function switchWeaknessTab(tabIdx) {
+            const contents = [
+                { title: "最常剩下：茄子、青菜、魚、豆芽菜。廚餘中蔬菜佔 63%。", desc: "了解學童喜好與口味調整，是減少校園剩食的關鍵！", emoji: "🍆🥬🐟" },
+                { title: "份量拿捏：盛裝太多吃不完導致倒掉。", desc: "推動「自主打菜」或「適量盛裝，不夠再添」，能有效降低浪費。", emoji: "🍚⚖️" },
+                { title: "用餐情境：下課玩太瘋、用餐時間太短。", desc: "放鬆心情、細嚼慢咽，營造溫馨愉快的用餐氣氛。", emoji: "⏰🥳" },
+                { title: "菜單安排：烹調方式不合胃口或重複率高。", desc: "營養師精心調配菜單、結合在地食材與多樣化烹調。", emoji: "📋🍲" },
+                { title: "回饋回收：廚餘桶重量回報與惜食教育。", desc: "定期統計各班廚餘重量，舉辦班級完食競賽。", emoji: "♻️🏆" }
+            ];
+            for (let i = 0; i < 5; i++) {
+                const btn = document.getElementById(`weak-tab-${i}`);
+                if (btn) {
+                    btn.className = (i === tabIdx) ? "comic-button px-5 py-2.5 rounded-xl font-black text-base bg-brandOrange text-white" : "comic-button px-5 py-2.5 rounded-xl font-black text-base bg-white text-cardBorder";
+                }
+            }
+            const contentBox = document.getElementById('boss-weakness-content');
+            if (contentBox) {
+                const item = contents[tabIdx];
+                contentBox.innerHTML = `
+                    <div class="text-3xl">${item.emoji}</div>
+                    <h4 class="text-lg font-black text-cardBorder">${item.title}</h4>
+                    <p class="text-sm font-bold text-gray-700">${item.desc}</p>
+                `;
+            }
+        }
+
+        function restartGame() {
+            gameState.collectedRulesCount = 0;
+            gameState.bossHp = 100;
+            gameState.rules.forEach(r => r.unlocked = false);
+            attackCount = 0;
+            initGame();
+            switchStage(1);
+        }
+
+        function openAdminModal() {
+            const modal = document.getElementById('admin-modal');
+            if (modal) modal.classList.remove('hidden');
+            const authStep = document.getElementById('admin-auth-step');
+            const panelStep = document.getElementById('admin-panel-step');
+            const passInput = document.getElementById('admin-pass-input');
+            const errorMsg = document.getElementById('auth-error-msg');
+            if (authStep) authStep.classList.remove('hidden');
+            if (panelStep) panelStep.classList.add('hidden');
+            if (passInput) passInput.value = '';
+            if (errorMsg) errorMsg.classList.add('hidden');
+        }
+
+        function closeAdminModal() {
+            const modal = document.getElementById('admin-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const passInput = document.getElementById('admin-pass-input');
+            const input = passInput ? passInput.value : '';
+            if (input === 'admin' || input === '8888') {
+                const authStep = document.getElementById('admin-auth-step');
+                const panelStep = document.getElementById('admin-panel-step');
+                if (authStep) authStep.classList.add('hidden');
+                if (panelStep) panelStep.classList.remove('hidden');
+                
+                document.getElementById('setting-title').value = gameState.siteTitle;
+                document.getElementById('setting-subtitle').value = gameState.siteSubtitle;
+                document.getElementById('setting-zone-name').value = gameState.zoneName;
+                document.getElementById('setting-s1-name').value = gameState.stage1Name;
+                document.getElementById('setting-s1-title').value = gameState.stage1Title;
+                document.getElementById('setting-s1-desc').value = gameState.stage1Desc;
+                document.getElementById('setting-s2-name').value = gameState.stage2Name;
+                document.getElementById('setting-s2-title').value = gameState.stage2Title;
+                document.getElementById('setting-s3-name').value = gameState.stage3Name;
+                document.getElementById('setting-s3-title').value = gameState.stage3Title;
+                document.getElementById('setting-s4-name').value = gameState.stage4Name;
+                document.getElementById('setting-s4-title').value = gameState.stage4Title;
+                document.getElementById('setting-101-img').value = gameState.img101Url;
+                document.getElementById('setting-font-size').value = gameState.fontSizeSetting;
+
+                renderAdminExpensesList();
+                renderAdminRulesList();
+                switchAdminTab('general');
+            } else {
+                const errorMsg = document.getElementById('auth-error-msg');
+                if (errorMsg) errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function switchAdminTab(tabName) {
+            const tabs = ['general', 's1', 's2', 's3', 's4'];
+            tabs.forEach(t => {
+                const tabContent = document.getElementById(`admin-tab-${t}`);
+                const tabBtn = document.getElementById(`admin-tab-btn-${t}`);
+                if (tabContent) tabContent.classList.add('hidden');
+                if (tabBtn) tabBtn.className = "comic-button px-3.5 py-2 rounded-xl font-black text-xs bg-white text-cardBorder";
+            });
+            const activeContent = document.getElementById(`admin-tab-${tabName}`);
+            const activeBtn = document.getElementById(`admin-tab-btn-${tabName}`);
+            if (activeContent) activeContent.classList.remove('hidden');
+            if (activeBtn) activeBtn.className = "comic-button px-3.5 py-2 rounded-xl font-black text-xs bg-brandOrange text-white";
+        }
+
+        function renderAdminExpensesList() {
+            const listContainer = document.getElementById('admin-expenses-list');
+            if (!listContainer) return;
+            listContainer.innerHTML = gameState.expenses.map((item, idx) => `
+                <div class="flex items-center space-x-2 bg-white p-2 rounded-xl border-2 border-cardBorder">
+                    <span class="text-lg">${item.icon}</span>
+                    <input type="text" value="${item.name}" id="exp-name-${idx}" class="w-1/3 p-1.5 border border-gray-300 rounded-lg text-xs font-bold" placeholder="項目名稱">
+                    <input type="number" step="0.5" value="${item.cost}" id="exp-cost-${idx}" class="w-16 p-1.5 border border-gray-300 rounded-lg text-xs font-bold" placeholder="金額">
+                    <span class="text-[11px] font-bold">元</span>
+                    <button onclick="removeExpenseItem(${idx})" class="bg-red-500 text-white px-2 py-1 rounded-lg text-[10px] font-black">刪除</button>
+                </div>
+            `).join('');
+        }
+
+        function addExpenseItem() {
+            gameState.expenses.push({ id: 'custom_' + Date.now(), name: '新項目', cost: 1, icon: '📦', desc: '自訂項目說明' });
+            renderAdminExpensesList();
+        }
+
+        function removeExpenseItem(idx) {
+            gameState.expenses.splice(idx, 1);
+            renderAdminExpensesList();
+        }
+
+        function renderAdminRulesList() {
+            const rulesContainer = document.getElementById('admin-rules-list');
+            if (!rulesContainer) return;
+            rulesContainer.innerHTML = gameState.rules.map((rule, idx) => `
+                <div class="bg-white p-2.5 rounded-xl border-2 border-cardBorder space-y-1.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-brandOrange text-white px-2 py-0.5 rounded text-[10px] font-black">規則 #${rule.id}</span>
+                        <input type="text" value="${rule.title}" id="rule-title-${idx}" class="w-full p-1.5 border border-gray-300 rounded-lg text-xs font-bold" placeholder="規則標題">
+                    </div>
+                    <textarea id="rule-desc-${idx}" class="w-full p-1.5 border border-gray-300 rounded-lg text-[11px] font-bold" rows="2" placeholder="規則詳細說明">${rule.desc}</textarea>
+                </div>
+            `).join('');
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    gameState.img101Url = e.target.result;
+                    document.getElementById('setting-101-img').value = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveAdminSettings() {
+            gameState.siteTitle = document.getElementById('setting-title').value.trim();
+            gameState.siteSubtitle = document.getElementById('setting-subtitle').value.trim();
+            gameState.zoneName = document.getElementById('setting-zone-name').value.trim();
+            gameState.stage1Name = document.getElementById('setting-s1-name').value.trim();
+            gameState.stage1Title = document.getElementById('setting-s1-title').value.trim();
+            gameState.stage1Desc = document.getElementById('setting-s1-desc').value.trim();
+            gameState.stage2Name = document.getElementById('setting-s2-name').value.trim();
+            gameState.stage2Title = document.getElementById('setting-s2-title').value.trim();
+            gameState.stage3Name = document.getElementById('setting-s3-name').value.trim();
+            gameState.stage3Title = document.getElementById('setting-s3-title').value.trim();
+            gameState.stage4Name = document.getElementById('setting-s4-name').value.trim();
+            gameState.stage4Title = document.getElementById('setting-s4-title').value.trim();
+            gameState.img101Url = document.getElementById('setting-101-img').value.trim();
+            gameState.fontSizeSetting = document.getElementById('setting-font-size').value;
+
+            gameState.expenses = gameState.expenses.map((item, idx) => {
+                const nameInput = document.getElementById(`exp-name-${idx}`);
+                const costInput = document.getElementById(`exp-cost-${idx}`);
+                return {
+                    ...item,
+                    name: nameInput ? nameInput.value : item.name,
+                    cost: costInput ? parseFloat(costInput.value) || 0 : item.cost
+                };
+            });
+
+            gameState.rules = gameState.rules.map((rule, idx) => {
+                const tInput = document.getElementById(`rule-title-${idx}`);
+                const dInput = document.getElementById(`rule-desc-${idx}`);
+                return {
+                    ...rule,
+                    title: tInput ? tInput.value : rule.title,
+                    desc: dInput ? dInput.value : rule.desc
+                };
+            });
+
+            document.getElementById('site-title').innerHTML = `<span>${gameState.siteTitle.split('(')[0] || '童年惡夢大投票'}</span><span class="text-xs md:text-sm bg-brandYellow text-cardBorder px-3 py-1 rounded-full border-2 border-cardBorder font-black">KITCHEN RUSH!</span>`;
+            document.getElementById('site-subtitle').textContent = gameState.siteSubtitle;
+            document.getElementById('zone-badge-text').textContent = gameState.zoneName;
+            
+            document.getElementById('nav-label-1').textContent = gameState.stage1Name;
+            document.getElementById('nav-label-2').textContent = gameState.stage2Name;
+            document.getElementById('nav-label-3').textContent = gameState.stage3Name;
+            document.getElementById('nav-label-4').textContent = gameState.stage4Name;
+
+            document.getElementById('stage1-title-view').textContent = gameState.stage1Title;
+            document.getElementById('stage1-desc-view').textContent = gameState.stage1Desc;
+            document.getElementById('stage2-title-view').textContent = gameState.stage2Title;
+            document.getElementById('stage3-title-view').textContent = gameState.stage3Title;
+            document.getElementById('stage4-title-view').textContent = gameState.stage4Title;
+
+            document.body.style.fontSize = gameState.fontSizeSetting;
+
+            renderBudgetSliders();
+            renderFlipCards();
+            updateStage4Photo();
+            closeAdminModal();
+        }
+
+        window.onload = initGame;
+    </script>
+</body>
+</html>
